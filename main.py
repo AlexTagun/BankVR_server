@@ -1,5 +1,5 @@
 import http.server
-# import urllib.parse
+from DataBase import DataBase
 
 PORT_NUMBER = 8888
 
@@ -39,8 +39,13 @@ try:
     server = http.server.HTTPServer(('', PORT_NUMBER), myHandler)
     print("Started httpserver on port ", PORT_NUMBER)
 
+    db = DataBase()
+    db.ExecuteQuery()
+    
     # Wait forever for incoming htto requests
     server.serve_forever()
+    
+    
 
 except KeyboardInterrupt:
     print('^C received, shutting down the web server')
