@@ -1,7 +1,15 @@
 import http.server
 from DataBase import DataBase
 
-PORT_NUMBER = 8888
+PORT_NUMBER = 8081
+
+def is_settings():
+    return "{\"Version\": \"0.0.1\", \"Server\": \"http://localhost:8081\"}"
+
+get_request_handler = {
+    "/is/settings": is_settings
+}
+
 
 
 # This class will handles any incoming request from
@@ -13,8 +21,12 @@ class myHandler(http.server.BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
         self.end_headers()
+        
+        response = get_request_handler[self.path]()
+        print(response)
+        
         # Send the html message
-        self.wfile.write("Hello World !".encode('utf-8'))
+        self.wfile.write(response.encode('utf-8'))
         return
 
     # Handler for the POST requests
