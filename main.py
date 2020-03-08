@@ -10,6 +10,20 @@ get_request_handler = {
     "/is/settings": is_settings
 }
 
+def uuid_create(data):
+    return "{\"requestTime\": 123, \"code\": 0, \"msg\": \"message\", \"payload\": \"payload_string\"}"
+
+def register(data):
+    return "{\"requestTime\": 123, \"code\": 0, \"msg\": \"message\"}"
+
+def login(data):
+    return "{\"requestTime\": 123, \"code\": 0, \"msg\": \"message\", \"payload\": {\"token\": \"token_data\"}}"
+
+post_request_handler = {
+    "/uuid/create": uuid_create,
+    "/register": register,
+    "/login": login
+}
 
 
 # This class will handles any incoming request from
@@ -37,11 +51,13 @@ class myHandler(http.server.BaseHTTPRequestHandler):
             print(content_len)
             post_body_json = self.rfile.read(content_len)
             print(post_body_json)
+            
+            responce = post_request_handler[self.path](post_body_json)
 
         self.send_header('Content-type', 'text/html')
         self.end_headers()
         # Send the html message
-        self.wfile.write(post_body_json)
+        self.wfile.write(responce.encode('utf-8'))
         return
 
 
