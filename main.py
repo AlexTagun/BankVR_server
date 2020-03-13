@@ -1,29 +1,21 @@
 import http.server
 from DataBase import DataBase
+from PostRequestHandler import PostRequestHandler
 
 PORT_NUMBER = 8081
 
+
 def is_settings():
     return "{\"Version\": \"0.0.1\", \"Server\": \"http://localhost:8081\"}"
+
 
 get_request_handler = {
     "/is/settings": is_settings
 }
 
-def uuid_create(data):
-    return "{\"requestTime\": 123, \"code\": 0, \"msg\": \"message\", \"payload\": \"payload_string\"}"
-
-def register(data):
-    return "{\"requestTime\": 123, \"code\": 0, \"msg\": \"message\"}"
-
-def login(data):
-    return "{\"requestTime\": 123, \"code\": 0, \"msg\": \"message\", \"payload\": {\"token\": \"token_data\"}}"
-
-post_request_handler = {
-    "/uuid/create": uuid_create,
-    "/register": register,
-    "/login": login
-}
+db = DataBase()
+db.ExecuteQuery()
+post_request_handler = PostRequestHandler(db)
 
 
 # This class will handles any incoming request from
@@ -35,10 +27,10 @@ class myHandler(http.server.BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
         self.end_headers()
-        
+
         response = get_request_handler[self.path]()
         print(response)
-        
+
         # Send the html message
         self.wfile.write(response.encode('utf-8'))
         return
@@ -51,8 +43,10 @@ class myHandler(http.server.BaseHTTPRequestHandler):
             print(content_len)
             post_body_json = self.rfile.read(content_len)
             print(post_body_json)
-            
-            responce = post_request_handler[self.path](post_body_json)
+
+            global post_request_handler
+
+            responce = post_request_handler.handler[self.path](post_body_json.decode("utf-8"))
 
         self.send_header('Content-type', 'text/html')
         self.end_headers()
@@ -62,18 +56,16 @@ class myHandler(http.server.BaseHTTPRequestHandler):
 
 
 try:
+
     # Create a web server and define the handler to manage the
     # incoming request
     server = http.server.HTTPServer(('', PORT_NUMBER), myHandler)
     print("Started httpserver on port ", PORT_NUMBER)
 
-    db = DataBase()
-    db.ExecuteQuery()
-    
     # Wait forever for incoming htto requests
     server.serve_forever()
-    
-    
+
+
 
 except KeyboardInterrupt:
     print('^C received, shutting down the web server')
