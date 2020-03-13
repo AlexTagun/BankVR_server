@@ -46,7 +46,7 @@ class myHandler(http.server.BaseHTTPRequestHandler):
 
             global post_request_handler
 
-            responce = post_request_handler.handler[self.path](post_body_json.decode("utf-8"))
+            responce = post_request_handler.handler[self.path](post_body_json.decode("utf-8").replace(u'\u200b', ''))
 
         self.send_header('Content-type', 'text/html')
         self.end_headers()

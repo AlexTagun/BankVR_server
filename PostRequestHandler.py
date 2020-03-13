@@ -40,4 +40,23 @@ class PostRequestHandler:
         return response
 
     def login(self, data):
-        return "{\"requestTime\": 123, \"code\": 0, \"msg\": \"message\", \"payload\": {\"token\": \"token_data\"}}"
+        data = json.loads(data)
+        print(data)
+        login = data["login"]
+        password = data["payload"]["pass"]
+        print(password + '=====')
+
+        current_time = time.time()
+        db_msg = self.db.is_user_registered(login, password)
+        code = "0"
+        msg = ""
+
+        if db_msg != '[(\'' + login + '\',)]':
+            code = "16"
+            msg = db_msg
+
+        response = '{"requestTime": ' + str(current_time) + ', "code": ' + code + ', "msg": "' + msg + '", ' \
+                   '"payload": { "token": "token_data"}}'
+        print(response)
+
+        return response
