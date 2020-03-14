@@ -10,7 +10,8 @@ class PostRequestHandler:
             "/uuid/create": self.uuid_create,
             "/register": self.register,
             "/login": self.login,
-            "/create/card": self.create_card
+            "/create/card": self.create_card,
+            "/get/profile": self.get_profile
         }
 
     def uuid_create(self, data):
@@ -57,11 +58,11 @@ class PostRequestHandler:
             msg = db_msg
 
         response = '{"requestTime": ' + str(current_time) + ', "code": ' + code + ', "msg": "' + msg + '", ' \
-                   '"payload": { "token": "token_data"}}'
+                                                                                                       '"payload": { "token": "token_data"}}'
         print(response)
 
         return response
-    
+
     def create_card(self, data):
         data = json.loads(data)
         login = data["login"]
@@ -76,4 +77,34 @@ class PostRequestHandler:
             # msg = db_msg
 
         response = '{"requestTime": ' + str(current_time) + ', "code": ' + code + ', "msg": "' + msg + '"}'
+        return response
+
+    def get_profile(self, data):
+        data = json.loads(data)
+        login = data["login"]
+
+        current_time = time.time()
+        db_msg = self.db.get_cards(login)
+
+        code = "0"
+        msg = ""
+
+        if not db_msg:
+            code = "16"
+            # msg = db_msg
+            response = '{"requestTime": ' + str(current_time) + ', "code": ' + code + ', "msg": "' + msg + '"}'
+            return response
+
+        cards_str = '['
+        for card in db_msg:
+            # print(card)
+            card_str = '{"Number": "' + card[0] + '", "PaumentSystemName": "' + card[1] + '", "PaumentSystemIcon": "' \
+                        '' + card[2] + '", "Balance": ' + str(card[3]) + ', "CurrencySymbol": "' + card[4] + '", ' \
+                        '"HasWireless": "' + card[5] + '"},'
+            cards_str += card_str
+        cards_str = cards_str[:-1]
+        cards_str += ']'
+
+        response = '{"UserLogin": "' + login + '", "Cards": ' + cards_str + '}'
+        print(response)
         return response

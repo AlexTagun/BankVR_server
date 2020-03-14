@@ -66,3 +66,20 @@ class DataBase:
         except Exception as e:
             return str(e)
         return "0"
+
+    def get_cards(self, login):
+        query = 'SELECT card_number, payment_system_name, payment_system_icon, card_balance, ' \
+                    'currency_symbol, card_has_wireless_payment ' \
+                'FROM "Cards", "Payment_systems", "Currencies" where ' \
+                'payment_system_id = card_payment_system_id ' \
+                'and card_currency_id = currency_id ' \
+                'and card_user_login = \'' + login + '\''
+        
+        print(query)
+        try:
+            self.cursor.execute(query)
+            result = self.cursor.fetchall()
+            print(result)
+            return result
+        except Exception as e:
+            return str(e)
