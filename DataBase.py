@@ -1,4 +1,5 @@
 import sqlite3
+import random
 
 
 class DataBase:
@@ -21,7 +22,7 @@ class DataBase:
         query = 'INSERT INTO "main"."Users"' \
                 '("user_id", "user_login", "user_password", "user_language", "user_platform", "user_device_info")' \
                 'VALUES (1, \'' + login + '\', \'' + password + '\', \'' + language + '\', \'' + user_platform + '\',' \
-                ' \'' + user_device_info + '\');'
+                                                                                                                 ' \'' + user_device_info + '\');'
         try:
             self.cursor.execute(query)
             self.conn.commit()
@@ -43,3 +44,25 @@ class DataBase:
             return str(result)
         except Exception as e:
             return str(e)
+
+    def create_card(self, login):
+
+        card_number = str(random.randint(1000, 9999)) + " " + str(random.randint(1000, 9999)) + " " + str(
+            random.randint(1000, 9999)) + " " + str(random.randint(1000, 9999))
+        card_payment_system_id = str(random.randrange(3))
+        card_balance = "0.0"
+        card_currency_id = str(random.randrange(3))
+        card_has_wireless_payment = "true"
+        if random.randrange(2) == 1:
+            card_has_wireless_payment = "false"
+
+        query = 'INSERT INTO "main"."Cards"' \
+                '("card_number", "card_payment_system_id", "card_balance", "card_currency_id", "card_has_wireless_payment", "card_user_login")' \
+                'VALUES (\'' + card_number + '\', ' + card_payment_system_id + ', ' + card_balance + ', ' + card_currency_id + ', \'' + card_has_wireless_payment + '\', \'' + login + '\');'
+        print(query)
+        try:
+            self.cursor.execute(query)
+            self.conn.commit()
+        except Exception as e:
+            return str(e)
+        return "0"

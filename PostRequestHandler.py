@@ -9,7 +9,8 @@ class PostRequestHandler:
         self.handler = {
             "/uuid/create": self.uuid_create,
             "/register": self.register,
-            "/login": self.login
+            "/login": self.login,
+            "/create/card": self.create_card
         }
 
     def uuid_create(self, data):
@@ -59,4 +60,20 @@ class PostRequestHandler:
                    '"payload": { "token": "token_data"}}'
         print(response)
 
+        return response
+    
+    def create_card(self, data):
+        data = json.loads(data)
+        login = data["login"]
+
+        current_time = time.time()
+        db_msg = self.db.create_card(login)
+        code = "0"
+        msg = ""
+
+        if db_msg != '0':
+            code = "16"
+            # msg = db_msg
+
+        response = '{"requestTime": ' + str(current_time) + ', "code": ' + code + ', "msg": "' + msg + '"}'
         return response
