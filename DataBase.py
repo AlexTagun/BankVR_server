@@ -19,10 +19,14 @@ class DataBase:
         print(result)
 
     def create_user(self, login, password, language, user_platform, user_device_info):
+        self.cursor.execute('SELECT user_id FROM "main"."Users"')
+        result = self.cursor.fetchall()
+        id = result[-1][0] + 1
+        print(id)
         query = 'INSERT INTO "main"."Users"' \
                 '("user_id", "user_login", "user_password", "user_language", "user_platform", "user_device_info")' \
-                'VALUES (1, \'' + login + '\', \'' + password + '\', \'' + language + '\', \'' + user_platform + '\',' \
-                                                                                                                 ' \'' + user_device_info + '\');'
+                'VALUES (' + str(id) + ', \'' + login + '\', \'' + password + '\', \'' + language + '\', \'' + user_platform + '\',' \
+                                                                                                                          ' \'' + user_device_info + '\');'
         try:
             self.cursor.execute(query)
             self.conn.commit()
@@ -49,9 +53,9 @@ class DataBase:
 
         card_number = str(random.randint(1000, 9999)) + " " + str(random.randint(1000, 9999)) + " " + str(
             random.randint(1000, 9999)) + " " + str(random.randint(1000, 9999))
-        card_payment_system_id = str(random.randrange(3))
+        card_payment_system_id = str(random.randint(1, 3))
         card_balance = "0.0"
-        card_currency_id = str(random.randrange(3))
+        card_currency_id = str(random.randint(1, 3))
         card_has_wireless_payment = "true"
         if random.randrange(2) == 1:
             card_has_wireless_payment = "false"
@@ -69,17 +73,15 @@ class DataBase:
 
     def get_cards(self, login):
         query = 'SELECT card_number, payment_system_name, payment_system_icon, card_balance, ' \
-                    'currency_symbol, card_has_wireless_payment ' \
+                'currency_symbol, card_has_wireless_payment ' \
                 'FROM "Cards", "Payment_systems", "Currencies" where ' \
                 'payment_system_id = card_payment_system_id ' \
                 'and card_currency_id = currency_id ' \
                 'and card_user_login = \'' + login + '\''
-        
-        print(query)
+
         try:
             self.cursor.execute(query)
             result = self.cursor.fetchall()
-            print(result)
             return result
         except Exception as e:
             return str(e)

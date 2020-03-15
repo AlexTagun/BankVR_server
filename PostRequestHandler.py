@@ -106,5 +106,5 @@ class PostRequestHandler:
         cards_str += ']'
 
         response = '{"UserLogin": "' + login + '", "Cards": ' + cards_str + '}'
-        print(response)
+        # print(response)
         return response
