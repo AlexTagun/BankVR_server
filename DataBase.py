@@ -25,8 +25,9 @@ class DataBase:
         print(id)
         query = 'INSERT INTO "main"."Users"' \
                 '("user_id", "user_login", "user_password", "user_language", "user_platform", "user_device_info")' \
-                'VALUES (' + str(id) + ', \'' + login + '\', \'' + password + '\', \'' + language + '\', \'' + user_platform + '\',' \
-                                                                                                                          ' \'' + user_device_info + '\');'
+                'VALUES (' + str(
+            id) + ', \'' + login + '\', \'' + password + '\', \'' + language + '\', \'' + user_platform + '\',' \
+                                                                                                          ' \'' + user_device_info + '\');'
         try:
             self.cursor.execute(query)
             self.conn.commit()
@@ -78,6 +79,39 @@ class DataBase:
                 'payment_system_id = card_payment_system_id ' \
                 'and card_currency_id = currency_id ' \
                 'and card_user_login = \'' + login + '\''
+
+        try:
+            self.cursor.execute(query)
+            result = self.cursor.fetchall()
+            return result
+        except Exception as e:
+            return str(e)
+
+    def get_complexes(self):
+        query = 'SELECT * ' \
+                'FROM "Complexes"'
+
+        try:
+            self.cursor.execute(query)
+            result = self.cursor.fetchall()
+            return result
+        except Exception as e:
+            return str(e)
+
+    def get_flats_ids(self, complex_id):
+        query = 'SELECT flat_id ' \
+                'FROM "Complex_Flats" where complex_id = ' + str(complex_id)
+
+        try:
+            self.cursor.execute(query)
+            result = self.cursor.fetchall()
+            return result
+        except Exception as e:
+            return str(e)
+
+    def get_flat(self, flat_id):
+        query = 'SELECT * ' \
+                'FROM "Flats" where flat_id = ' + str(flat_id)
 
         try:
             self.cursor.execute(query)

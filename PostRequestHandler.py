@@ -11,7 +11,8 @@ class PostRequestHandler:
             "/register": self.register,
             "/login": self.login,
             "/create/card": self.create_card,
-            "/get/profile": self.get_profile
+            "/get/profile": self.get_profile,
+            "/get/apartments": self.get_apartments
         }
 
     def uuid_create(self, data):
@@ -99,12 +100,52 @@ class PostRequestHandler:
         for card in db_msg:
             # print(card)
             card_str = '{"Number": "' + card[0] + '", "PaumentSystemName": "' + card[1] + '", "PaumentSystemIcon": "' \
-                        '' + card[2] + '", "Balance": ' + str(card[3]) + ', "CurrencySymbol": "' + card[4] + '", ' \
-                        '"HasWireless": "' + card[5] + '"},'
+                                                                                          '' + card[
+                           2] + '", "Balance": ' + str(card[3]) + ', "CurrencySymbol": "' + card[4] + '", ' \
+                                                                                                      '"HasWireless": "' + \
+                       card[5] + '"},'
             cards_str += card_str
         cards_str = cards_str[:-1]
         cards_str += ']'
 
         response = '{"UserLogin": "' + login + '", "Cards": ' + cards_str + '}'
         # print(response)
+        return response
+
+    def get_apartments(self, data):
+
+        complexes = self.db.get_complexes()
+        complexes_str = '['
+        for comlex in complexes:
+            print(comlex)
+            flat_ids = self.db.get_flats_ids(comlex[0])
+            flats_str = '['
+            for flat_id in flat_ids:
+                flat = self.db.get_flat(flat_id[0])
+                flat = flat[0]
+                print(str(flat[5]))
+                flat_str = '{' \
+                           '"Id": ' + str(flat[0]) + ', ' \
+                           '"AddressableName": "' + flat[1] + '", ' \
+                           '"Name": "' + flat[2] + '", ' \
+                           '"RoomNumber": ' + str(flat[3]) + ', ' \
+                           '"Space": ' + str(flat[4]) + ', ' \
+                           '"Price": ' + str(flat[5]) + ' },'
+                flats_str += flat_str
+            flats_str = flats_str[:-1]
+            flats_str += ']'
+
+            complexes_str += '{' \
+                             '"Id": ' + str(comlex[0]) + ', ' \
+                             '"AddressableName": "' + comlex[1] + '", ' \
+                             '"Name": "' + comlex[2] + '", ' \
+                             '"Address": "' + comlex[3] + '", ' \
+                             '"MetroData": "' + comlex[4] + '", ' \
+                             '"CheckInDate": "' + comlex[5] + '", ' \
+                             '"Flats": ' + flats_str + ' },'
+        complexes_str = complexes_str[:-1]
+        complexes_str += ']'
+
+        response = '{"ComplexesData": ' + complexes_str + '}'
+        print(response)
         return response
