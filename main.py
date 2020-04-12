@@ -1,4 +1,5 @@
 import http.server
+import TelegramBot as bot
 from DataBase import DataBase
 from PostRequestHandler import PostRequestHandler
 
@@ -30,6 +31,7 @@ class myHandler(http.server.BaseHTTPRequestHandler):
 
         response = get_request_handler[self.path]()
         print(response)
+        print(self.client_address)
 
         # Send the html message
         self.wfile.write(response.encode('utf-8'))
@@ -56,6 +58,8 @@ class myHandler(http.server.BaseHTTPRequestHandler):
 
 
 try:
+
+    bot.start()
 
     # Create a web server and define the handler to manage the
     # incoming request
