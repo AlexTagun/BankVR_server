@@ -4,6 +4,8 @@ import telebot
 
 bot = telebot.TeleBot('1160196994:AAHlGmduTo4skEko734VXINswaohZMRXYhM')
 
+LastUserMessage = None
+
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
@@ -12,9 +14,16 @@ def start_message(message):
 
 @bot.message_handler(content_types=['text'])
 def send_text(message):
+    global LastUserMessage
+    LastUserMessage = message
     print(message.chat.id)
     send_post_request(message.text)
     bot.send_message(message.chat.id, 'Done')
+
+
+def reply_user(text):
+    global LastUserMessage
+    bot.send_message(LastUserMessage.chat.id, text)
 
 
 def send_post_request(text):

@@ -1,18 +1,19 @@
 import json
 import time
 from DataBase import DataBase
+import TelegramBot as telegram
 
 
 class PostRequestHandler:
     def __init__(self, db):
         self.db = db
         self.handler = {
-            "/uuid/create": self.uuid_create,
             "/register": self.register,
             "/login": self.login,
             "/create/card": self.create_card,
             "/get/profile": self.get_profile,
-            "/get/apartments": self.get_apartments
+            "/get/apartments": self.get_apartments,
+            "/send/message": self.send_message
         }
 
     def uuid_create(self, data):
@@ -148,4 +149,14 @@ class PostRequestHandler:
 
         response = '{"ComplexesData": ' + complexes_str + '}'
         print(response)
+        return response
+
+    def send_message(self, data):
+        data = json.loads(data)
+        text = data["payload"]["text"]
+        telegram.reply_user(text)
+        current_time = time.time()
+        code = "0"
+        msg = ""
+        response = '{"requestTime": ' + str(current_time) + ', "code": ' + code + ', "msg": "' + msg + '"}'
         return response
