@@ -7,7 +7,8 @@ class DataBase:
     cursor = None
 
     def __init__(self):
-        self.conn = sqlite3.connect('C:\\Users\\aleks\\Documents\\BankVR_server\\DataBase\\BankVR.db')
+        # self.conn = sqlite3.connect('C:\\Users\\aleks\\Documents\\BankVR_server\\DataBase\\BankVR.db')
+        self.conn = sqlite3.connect('~/BankVR_server/DataBase/BankVR.db')
         self.cursor = self.conn.cursor()
 
     def Close(self):
