@@ -27,7 +27,7 @@ def reply_user(text):
 
 
 def send_post_request(text):
-    url = "http://127.0.0.1:8888"
+    url = "http://localhost:8082/get/message"
     data = text
 
     r = requests.post(url=url, data=data.encode('utf-8'))

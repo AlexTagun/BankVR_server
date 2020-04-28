@@ -7,13 +7,16 @@ import TelegramBot as telegram
 class PostRequestHandler:
     def __init__(self, db):
         self.db = db
+        self.last_bot_message = ""
         self.handler = {
             "/register": self.register,
             "/login": self.login,
             "/create/card": self.create_card,
             "/get/profile": self.get_profile,
             "/get/apartments": self.get_apartments,
-            "/send/message": self.send_message
+            "/send/message": self.send_message,
+            "/get/message": self.get_message,
+            "/check/message": self.check_message
         }
 
     def uuid_create(self, data):
@@ -160,3 +163,25 @@ class PostRequestHandler:
         msg = ""
         response = '{"requestTime": ' + str(current_time) + ', "code": ' + code + ', "msg": "' + msg + '"}'
         return response
+    
+    def get_message(self, data):
+        # data = json.loads(data)
+        text = str(data)
+        print(text)
+        self.last_bot_message = text
+        current_time = time.time()
+        code = "0"
+        msg = ""
+        response = '{"requestTime": ' + str(current_time) + ', "code": ' + code + ', "msg": "' + msg + '"}'
+        return response
+    
+    def check_message(self, data):
+
+        current_time = time.time()
+        code = "0"
+        msg = ""
+        response = '{"requestTime": ' + str(current_time) + ', "code": ' + code + ', "msg": "' + msg + '", ' \
+                                                                                                   '"payload": "' + self.last_bot_message + '"}'
+        self.last_bot_message = ""
+        return response
+        

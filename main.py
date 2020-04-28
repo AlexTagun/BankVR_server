@@ -3,11 +3,11 @@ import TelegramBot as bot
 from DataBase import DataBase
 from PostRequestHandler import PostRequestHandler
 
-PORT_NUMBER = 8085
+PORT_NUMBER = 8082
 
 
 def is_settings():
-    return "{\"Version\": \"0.0.1\", \"Server\": \"http://localhost:8081\"}"
+    return "{\"Version\": \"0.0.1\", \"Server\": \"http://localhost:8082\"}"
 
 
 get_request_handler = {
